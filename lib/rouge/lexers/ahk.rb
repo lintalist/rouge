@@ -1,10 +1,14 @@
 # -*- coding: utf-8 -*- #
+# Highlighs: hotkeys, labels, user %variables%, commands, functions, builtin variables, keys
+# Bugs/TODO:
+# - multiple quoted sections on one line fails
+# - check command/functionlist for missing and/or duplicates
 
 module Rouge
   module Lexers
     class AutoHotkey < RegexLexer
       title "AutoHotkey"
-      desc "AutoHotkey 123"
+      desc "AutoHotkey, Windows scripting language (http://autohotkey.com/)"
       tag 'ahk'
       aliases 'autohotkey'
       filenames '*.ahk'
@@ -20,7 +24,7 @@ module Rouge
           filecopydir filecreatedir filecreateshortcut filedelete filegetattrib
           filegetshortcut filegetsize filegettime filegetversion fileinstall filemove
           filemovedir fileread filereadline filerecycle filerecycleempty fileremovedir
-          fileselectfile fileselectfolder filesetattrib filesettime formattime
+          fileselectfile fileselectfolder filesetattrib filesettime format formattime
           getkeystate groupactivate groupadd groupclose groupdeactivate gui
           guicontrol guicontrolget hotkey
           imagesearch inidelete iniread iniwrite input inputbox keyhistory keywait
@@ -67,9 +71,9 @@ module Rouge
           maxhotkeysperinterval maxmem maxthreads maxthreadsbuffer maxthreadsperhotkey menumaskkey
           noenv notrayicon persistent singleinstance usehook warn winactivateforce
           ifwinnotactive ifwinnotexist
-	      loop parse
-	      gosub else
-	      return
+          loop parse
+          gosub else
+          return
         )
       end
 
@@ -148,7 +152,6 @@ module Rouge
         rule(//) { :pop! }
       end
 
-	  
       state :root do
 	    ident = '(?:[\w_][\w\d_]*)'
         mixin :whitespace
