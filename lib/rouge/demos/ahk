@@ -1,0 +1,42 @@
+; just a dummy script with fake code to test highlighting 
+
+SetTitleMatchMode, 2 
+
+MsgBox % test with's `more text ``escape character
+
+InStr("this","i",,1)
+
+#If WinExist(ahk_exe "notepad.exe")
+Loop, 10
+	{
+	 MsgBox % A_Index ; another comment
+	 ToolTip
+	 Loop, parse, %variablename%
+	 Loop, parse, %variable_name1%%A_Index%
+	 100%
+	}
+
+::btw::or not be
+  ::btw::or not be
+
+Send % {lbutton}
+Send % {A_ThisHotkey}
+
+Numpad0::
+ Numpad0::
+	Numpad0:
+MsgBox, 1, 4, OK, This is a test
+Return
+
+MsgBox % MyArray.Index[1]
+MyArray.Pop()
+MyArray.Push()
+MyArray.RemoveAt()
+
+SubRoutine:
+; do something
+Return
+
+/*
+more comments
+*/
