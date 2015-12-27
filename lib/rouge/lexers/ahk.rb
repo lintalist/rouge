@@ -1,8 +1,15 @@
 # -*- coding: utf-8 -*- #
-# Highlighs: hotkeys, labels, user %variables%, commands, functions, builtin variables, keys
+# Info:
+# started with vb.rb, removed sections to keep it working, then 
+# tweaked to add AutoHotkey specific keywords and rules
+#
+# Currently Highlights: commands, functions, hotkeys, labels, builtin variables, user %variables%, keys
 # Bugs/TODO:
-# - multiple quoted sections on one line fails
-# - check command/functionlist for missing and/or duplicates
+# - Maybe: also highlight hotstrings?
+# - todo: check command/functionlist for missing and/or duplicates
+# - todo: gather all "attributes" only a handful for testing purposes (like 'parse')
+# - bug: user variables starting with 'a' are not highlighted as other user variables
+# - bug: escaped % highlighted as error
 
 module Rouge
   module Lexers
@@ -69,11 +76,18 @@ module Rouge
           hotkeyinterval hotkeymodifiertimeout hotstring if iftimeout ifwinactive ifwinexist include
           includeagain inputlevel installkeybdhook installmousehook keyhistory ltrim
           maxhotkeysperinterval maxmem maxthreads maxthreadsbuffer maxthreadsperhotkey menumaskkey
-          noenv notrayicon persistent singleinstance usehook warn winactivateforce
+          noenv notrayicon persistent singleinstance warn winactivateforce usehook
           ifwinnotactive ifwinnotexist
-          loop parse
+          loop
           gosub else
           return
+        )
+      end
+
+      def self.keywords_attributes
+        @keywords_attributes ||= Set.new %w(
+          parse csv redraw doubleclick normal singleclick syslistview321 hide nohide destroy
+          submit tray togglecheck
         )
       end
 
@@ -156,10 +170,10 @@ module Rouge
 	    ident = '(?:[\w_][\w\d_]*)'
         mixin :whitespace
 
-        rule /[.]/, Punctuation, :dotted
-        rule /[(){}!#,:\[\]'`]/, Punctuation
+        rule /[`]/, Punctuation, :dotted
+        rule %r((==|~=|!=|<=|>=|\.\.\.|\.\.|->|=>|[=+\-*/^<>!\\\.,{}():'`#&~\[\]\|\?$])), Operator
         rule %r(#{ident}:\s), Name::Variable::Instance
-        rule %r(%\w+%), Keyword::Constant
+        rule %r(%[^Aa_]\w+%), Name::Tag
 
         rule id do |m|
           match = m[0].downcase
@@ -167,6 +181,8 @@ module Rouge
             token Keyword
           elsif self.class.keywords_variables.include? match
             token Keyword::Type
+          elsif self.class.keywords_attributes.include? match
+            token Generic::Emph
           elsif self.class.keys.include? match
             token Operator::Word
           else
@@ -177,11 +193,10 @@ module Rouge
         rule /%/, Name::Tag
         rule /"/, Str, :string
         rule /#{id}[%&@!#\$]?/, Name
-
-        rule /(\d+\.\d*|\d*\.\d+)(f[+-]?\d+)?/i, Num::Float
+        rule /(0x|U\+)[0-9a-fA-F]+([SILDFR]|US|UI|UL)?/, Num::Integer
+        rule /[0-9a-fA-F]+([SILDFR]|US|UI|UL)?/, Num::Integer
         rule /\d+([SILDFR]|US|UI|UL)?/, Num::Integer
-        rule /&H[0-9a-f]+([SILDFR]|US|UI|UL)?/, Num::Integer
-        rule /&O[0-7]+([SILDFR]|US|UI|UL)?/, Num::Integer
+        rule /(\d+\.\d*|\d*\.\d+)(f[+-]?\d+)?/i, Num::Float
 
         rule /_\n/, Keyword
       end
