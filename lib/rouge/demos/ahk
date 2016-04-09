@@ -1,7 +1,7 @@
 name:="John Smith"
 
 ^!s:: ; Ctrl+Alt+S becomes a hotkey to type a signature, including date:
-    Send Sincerely,{Enter}%name%
+    Send Sincerely,{Enter}%name%{Enter}%A_MDay% %A_MMMM% %A_YYYY%
 Return
 
 ::btw::by the way ; expands to "by the way" when "btw" is typed
